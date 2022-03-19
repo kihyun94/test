@@ -1,7 +1,3 @@
-secret
-
-
-def rsi(ohlc: pandas.DataFrame, period: int = 14):
     delta = ohlc["close"].diff()
     ups, downs = delta.copy(), delta.copy()
     ups[ups < 0] = 0
@@ -13,7 +9,7 @@ def rsi(ohlc: pandas.DataFrame, period: int = 14):
 
     return pandas.Series(100 - (100/(1 + RS)), name = "RSI")  
 
-coinlist = ["KRW-BTC",   "KRW-ETH", "KRW-EOS",  "KRW-SAND", "KRW-XRP",
+coinlist = ["KRW-BTC", "KRW-ETH", "KRW-EOS",  "KRW-SAND", "KRW-XRP",
             "KRW-WAVES", 'KRW-OMG', 'KRW-ETC',  'KRW-HUNT', 'KRW-STRK',
             'KRW-TRX',   'KRW-MBL', 'KRW-CELO', 'KRW-KNC',  'KRW-BORA',
             'KRW-ADA',   'KRW-SRM', 'KRW-SOL',  'KRW-MFT',  'KRW-1INCH']
@@ -50,7 +46,6 @@ def buy3(coin):
     res = upbit.buy_market_order(coin, money)
     return
 
-# 시장가 매도 함수
 def sell(coin):
     amount = upbit.get_balance(coin)
     cur_price = pyupbit.get_current_price(coin)
@@ -65,15 +60,16 @@ while(True):
         for i in range(len(coinlist)):
             data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute5")
             now_rsi = round(rsi(data, 14).iloc[-1],2)
-            
+          
 
             if now_rsi <= 28 and sblower23[i] == False and sblower18[i] == False : 
                 lower28[i] = True
                 sblower23[i] = True
 
-            elif now_rsi >= 32 and lower28[i] == True:
+            elif now_rsi >=32 and lower28[i] == True:
                 lower28[i] = False
                 buy1(coinlist[i])
+                print("1SR MASU!")                
 
 
             elif now_rsi <= 23 and sblower23[i] == True and sblower18[i] == False :
@@ -83,6 +79,7 @@ while(True):
             elif now_rsi >= 28 and lower23[i] == True :
                 lower23[i] = False
                 buy2(coinlist[i])
+                print("2ND MASU!")                
 
             elif now_rsi <= 18 and sblower18[i] == True :
                 lower18[i] = True
@@ -90,14 +87,21 @@ while(True):
             elif now_rsi >= 23 and lower18[i] == True :
                 lower18[i] = False
                 buy3(coinlist[i])
+                print("3RD MASU!")
 
             elif now_rsi >= 65 and higher65[i] == False:           
                 sell(coinlist[i])
+                print("MADO !")                
                 higher65[i] = True
                 sblower23[i] = False
             elif now_rsi <= 55 :
                 higher65[i] = False
 
+            print("NAME: ", coinlist[i], end=' ')
+            print("RSI :", now_rsi, end=' ')
+            if lower28[i] == True :
+                print(coinlist[i], "IS IN LIST", end='')
+            print()
 
             time.sleep(0.5)
     except Exception as e:
