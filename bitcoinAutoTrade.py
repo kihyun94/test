@@ -1,7 +1,7 @@
 import pyupbit
 import pandas
 
-upbit = pyupbit.Upbit(
+upbit = pyupbit.Upbit("ZSXz6AcY9FlMhnrR6bM8K47NQhuJQgDRCMi9BOEQ","LOmkniz4QpEZMNj6QYlNL1XzuYGAtIpbotGtvtwo") 
 
 coinlist = ['KRW-ZIL', 'KRW-WAVES', 'KRW-VET', 'KRW-ETC', 'KRW-AAVE', 'KRW-CHZ', 'KRW-BTC', 'KRW-SRM', 'KRW-XRP', 'KRW-AERGO', 'KRW-ETH', 'KRW-BORA', 'KRW-QTUM', 'KRW-KAVA', 'KRW-SAND']
 
@@ -89,4 +89,40 @@ while(True):
             
 
             if avg_buy_price == 0 :
-                avg_buy_price = 1      
+                avg_buy_price = 1                                                    
+            
+                                            
+            if krw >= 9000:                                                         
+                if now_rsi <= 28 and amount == 0 and lower[i] == False :            
+                    lower[i] = True                                                 
+                if now_rsi >= 30 and lower[i] == True:                              
+                    lower[i] = False                                                
+                    buy1(coinlist[i])                                               
+                    avg_buy_price = upbit.get_avg_buy_price(coinlist[i])            
+                    amount = upbit.get_balance(coinlist[i])                         
+                  
+                if avg_buy_price * 0.95 > cur_price :                                 
+                    if amount * avg_buy_price < 29500 * 5 :                            
+                        buy2(coinlist[i])                                               
+                        avg_buy_price = upbit.get_avg_buy_price(coinlist[i])            
+                        amount = upbit.get_balance(coinlist[i])                         
+                  
+
+            
+            madoma = upbit.get_balance(coinlist[i])                                                
+            if amount != 0 and avg_buy_price != 1 :                                                
+                for k in range(len(madocut)):                                                      
+                    if avg_buy_price * (1.010 + 0.005*k) < cur_price and madocut[k][i] == False:   
+                        avg123[k][i] = avg_buy_price*(1.006+0.005*k)                                
+                        madocut[k][i] = True                                                       
+
+                    if madocut[k][i] == True:                                                      
+                        if avg123[k][i] >= cur_price:                                              
+                            sell(coinlist[i])                                                      
+
+            if amount == 0 :                                                                       
+                for k in range(len(madocut)):                                                      
+                    madocut[k][i] = False
+
+    except Exception as e:
+        print(e)
