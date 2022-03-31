@@ -82,17 +82,15 @@ while(True):
         for i in range(len(coinlist)):
             data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute5")         
             now_rsi = round(rsi(data, 14).iloc[-1],2)                                
-            krw = get_balance("KRW")                                                 
-            avg_buy_price = upbit.get_avg_buy_price(coinlist[i])                     
-            amount = upbit.get_balance(coinlist[i])                                  
+            krw = get_balance("KRW")
+            avg_buy_price = upbit.get_avg_buy_price(coinlist[i])
+            amount = upbit.get_balance(coinlist[i])
             cur_price = pyupbit.get_current_price(coinlist[i])                       
-            
 
             if avg_buy_price == 0 :
-                avg_buy_price = 1                                                    
-            
+                avg_buy_price = 1 
                                             
-            if krw >= 9000:                                                         
+            if krw >= 9000: 
                 if now_rsi <= 28 and amount == 0 and lower[i] == False :            
                     lower[i] = True                                                 
                 if now_rsi >= 30 and lower[i] == True:                              
